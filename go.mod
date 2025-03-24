@@ -1,4 +1,4 @@
-module GinPro
+module github.com/LEILEI0628/GinPro
 
 go 1.24
 
