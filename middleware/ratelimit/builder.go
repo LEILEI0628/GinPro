@@ -3,7 +3,7 @@ package ratelimit
 import (
 	_ "embed"
 	"fmt"
-	"github.com/LEILEI0628/GinPro/middleware/ratelimit/limiter"
+	"github.com/LEILEI0628/GinPro/middleware/limiter"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
