@@ -72,6 +72,6 @@ func (cache *RedisCache[T, K]) Set(ctx context.Context, id K, value T) error {
 // 返回值: 删除操作错误（包含ErrKeyNotExist）
 func (c *RedisCache[T, K]) Delete(ctx context.Context, id K) error {
 	// 直接调用Redis DEL命令删除键
-	// 即使键不存在也返回nil错误，需根据业务需求处理
+	// 键不存在返回redis.Nil错误，需根据业务需求处理
 	return c.client.Del(ctx, c.keyFunc(id)).Err()
 }
