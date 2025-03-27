@@ -5,8 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CreateSession(context *gin.Context, userId int64, options sessions.Options) error {
-	session := sessions.Default(context)
+func CreateSession(ctx *gin.Context, userId int64, options sessions.Options) error {
+	session := sessions.Default(ctx)
 	session.Set("userId", userId)
 	session.Options(options)
 	err := session.Save()

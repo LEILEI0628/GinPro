@@ -77,19 +77,19 @@ func (builder *Builder) Build() gin.HandlerFunc {
 		panic("verification key is required")
 	}
 
-	return func(context *gin.Context) {
+	return func(ctx *gin.Context) {
 		// 忽略路径检查
-		if _, exists := builder.ignorePaths[context.Request.URL.Path]; exists {
-			context.Next()
+		if _, exists := builder.ignorePaths[ctx.Request.URL.Path]; exists {
+			ctx.Next()
 			return
 		}
 
 		// JWT验证流程
-		authHeader := context.GetHeader("Authorization")
+		authHeader := ctx.GetHeader("Authorization")
 		if authHeader == "" {
 			// 还未登录
 			// TODO 记录日志"Token extraction failed"
-			context.AbortWithStatus(http.StatusUnauthorized)
+			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
@@ -97,7 +97,7 @@ func (builder *Builder) Build() gin.HandlerFunc {
 		if len(parts) != 2 || parts[0] != "Bearer" {
 			// token格式错误
 			// TODO 记录日志"Token extraction failed"
-			context.AbortWithStatus(http.StatusUnauthorized)
+			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 		tokenStr := parts[1]
@@ -113,15 +113,15 @@ func (builder *Builder) Build() gin.HandlerFunc {
 		if err != nil || !token.Valid || token == nil || claims.UID == 0 { // 过期Valid为false
 			// token检验错误
 			// TODO 记录日志"Token validation failed"
-			context.AbortWithStatus(http.StatusUnauthorized)
+			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		// 自定义校验
-		if claims.UserAgent != context.Request.UserAgent() {
+		if claims.UserAgent != ctx.Request.UserAgent() {
 			// 严重的安全问题
 			// TODO 记录日志/监控"Custom validation failed"
-			context.AbortWithStatus(http.StatusForbidden)
+			ctx.AbortWithStatus(http.StatusForbidden)
 			return
 		}
 		// 通过校验
@@ -134,12 +134,12 @@ func (builder *Builder) Build() gin.HandlerFunc {
 				// 无需中断程序运行
 				// TODO 记录日志"Token refresh failed"
 			} else {
-				context.Header("x-refresh-token", newToken)
+				ctx.Header("x-refresh-token", newToken)
 			}
 		}
 
 		// 设置上下文
-		context.Set("claims", claims)
-		context.Next()
+		ctx.Set("claims", claims)
+		ctx.Next()
 	}
 }
