@@ -1,4 +1,4 @@
-package slide_window
+package limiter
 
 import (
 	"context"
