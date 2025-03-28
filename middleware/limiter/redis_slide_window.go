@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-//go:embed slide_window.lua
+//go:embed redis_slide_window.lua
 var luaScript string
 
 // RedisSlidingWindowLimiter 基于Redis的滑动窗口算法限流器
