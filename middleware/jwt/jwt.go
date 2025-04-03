@@ -59,6 +59,7 @@ type UserClaims struct {
 	jwt.RegisteredClaims // 组合RegisteredClaims可以更简洁的实现Claims接口
 	// 下列是自定义字段
 	UID       int64
+	Ssid      string
 	UserAgent string
 }
 

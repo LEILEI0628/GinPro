@@ -60,9 +60,9 @@ func (b *Builder) Build() gin.HandlerFunc {
 		if err != nil {
 			log.Println(err)
 			// Redis出错
-			// 保守做法：因为借助Redis限流，所以Redis崩溃后为了防止系统崩溃直接限流
+			// 保守做法：因为借助Redis限流，所以Redis崩溃后为了防止系统崩溃直接限流（下游处理能力较差时）
 			ctx.AbortWithStatus(http.StatusInternalServerError)
-			// 激进做法：虽然Redis崩溃了，但为了尽量服务正常的用户，所以不限流
+			// 激进做法：虽然Redis崩溃了，但为了尽量服务正常的用户，所以不限流（可用性要求很高或下游服务处理能力很强时）
 			// ctx.Next()
 			return
 		}
