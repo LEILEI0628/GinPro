@@ -39,27 +39,22 @@ func WrapToken[claims jwt.Claims](fn func(ctx *gin.Context, uc claims) (Result, 
 	}
 }
 
-func WrapBodyAndToken[Req any, claims jwt.Claims](fn func(ctx *gin.Context, req Req, uc claims) (Result, error)) gin.HandlerFunc {
+func WrapBodyAndToken[Req any, claims jwt.Claims](fn func(ctx *gin.Context, req Req, uc *claims) (Result, error)) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var req Req
 		if err := ctx.Bind(&req); err != nil {
 			return
 		}
 
-		//val, ok := ctx.Get("claims")
-		//if !ok {
-		//	// 未登录
-		//	ctx.AbortWithStatus(http.StatusUnauthorized)
-		//	return
-		//}
-		//
-		//claim, ok := val.(claims)
-		//if !ok {
-		//	ctx.AbortWithStatus(http.StatusUnauthorized)
-		//	return
-		//}
-		claim := ctx.MustGet("claims").(claims)
-		if claim == nil {
+		val, ok := ctx.Get("claims")
+		if !ok {
+			// 未登录
+			ctx.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		claim, ok := val.(*claims)
+		if !ok {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
