@@ -12,7 +12,7 @@ var L loggerx.Logger // 可以使用包变量的形式实现
 func WrapToken[claims jwt.Claims](fn func(ctx *gin.Context, uc claims) (Result, error)) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// 可以通过传入钩子函数before来在这里进行一些业务操作
-		val, ok := ctx.Get("users")
+		val, ok := ctx.Get("claims")
 		if !ok {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
@@ -46,7 +46,7 @@ func WrapBodyAndToken[Req any, claims jwt.Claims](fn func(ctx *gin.Context, req 
 			return
 		}
 
-		val, ok := ctx.Get("users")
+		val, ok := ctx.Get("claims")
 		if !ok {
 			// 未登录
 			ctx.AbortWithStatus(http.StatusUnauthorized)
