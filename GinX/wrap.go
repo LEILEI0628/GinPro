@@ -46,19 +46,23 @@ func WrapBodyAndToken[Req any, claims jwt.Claims](fn func(ctx *gin.Context, req 
 			return
 		}
 
-		val, ok := ctx.Get("claims")
-		if !ok {
-			// 未登录
+		//val, ok := ctx.Get("claims")
+		//if !ok {
+		//	// 未登录
+		//	ctx.AbortWithStatus(http.StatusUnauthorized)
+		//	return
+		//}
+		//
+		//claim, ok := val.(claims)
+		//if !ok {
+		//	ctx.AbortWithStatus(http.StatusUnauthorized)
+		//	return
+		//}
+		claim := ctx.MustGet("claims").(claims)
+		if claim == nil {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
-
-		claim, ok := val.(claims)
-		if !ok {
-			ctx.AbortWithStatus(http.StatusUnauthorized)
-			return
-		}
-
 		// 下面业务逻辑可能要操作ctx和读取HTTP header，因此选择传入业务处理方法
 		res, err := fn(ctx, req, claim)
 		if err != nil {
