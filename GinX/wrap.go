@@ -20,6 +20,11 @@ func WrapToken[claims jwt.Claims](fn func(ctx *gin.Context, uc *claims) (Result,
 
 		c, ok := val.(*claims)
 		if !ok {
+			// 可以监控这里
+			L.Error("claims断言失败",
+				loggerx.String("path", ctx.Request.URL.Path),
+				// 命中的路由
+				loggerx.String("route", ctx.FullPath()))
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
@@ -55,6 +60,11 @@ func WrapBodyAndToken[Req any, claims jwt.Claims](fn func(ctx *gin.Context, req 
 
 		claim, ok := val.(*claims)
 		if !ok {
+			// 可以监控这里
+			L.Error("claims断言失败",
+				loggerx.String("path", ctx.Request.URL.Path),
+				// 命中的路由
+				loggerx.String("route", ctx.FullPath()))
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
